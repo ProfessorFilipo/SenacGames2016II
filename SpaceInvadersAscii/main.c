@@ -8,7 +8,7 @@
 #define _Ship_H_ 5
 #define _Ship_W_ 5
 #define _UFO_H_  3
-#define _UFO_W_  3
+#define _UFO_W_  5
 #define _Sun_H_  5
 #define _Sun_W_  5
  
@@ -128,15 +128,15 @@ int main()
 {
  
   char M[_Tab_H_][_Tab_W_];
-  char Ship[_Ship_H_][_Ship_W_] = { {' ',' ',' ',' ',' '},
-                                    {' ',' ',254,' ',' '},
-                                    {' ',254,001,254,' '},
-                                    {' ',' ',254,' ',' '},
-                                    {' ',200,205,' ',' '} };
+  char Ship[_Ship_H_][_Ship_W_] = { {' ',' ',241,' ',' '},
+                                    {193,201,254,187,193},
+                                    {219,186,001,186,219},
+                                    {' ',200,254,188,' '},
+                                    {' ',' ',' ',' ',' '} };
  
-  char UFO[_UFO_H_][_UFO_W_] = { {' ','+',' '},
-                                 {'+','+','+'},
-                                 {' ','+',' '} };
+  char UFO[_UFO_H_][_UFO_W_] = { {' ',242,242,242,' '},
+                                 {191,177,001,177,218},
+                                 {' ',219,219,219,' '} };
  
   char Sun[_Sun_H_][_Sun_W_] =
                  {
@@ -149,7 +149,7 @@ int main()
  
   char lastHit;
   
-  //system("mode 150,50");
+  system("mode 80,40");
   srand(time(NULL));
  
   ClearScreen (M);
@@ -160,6 +160,10 @@ int main()
   int ShipPosX =  _Tab_H_ - _Ship_H_ ;
   int ShipPosY = (_Tab_W_ - _Ship_W_) / 2;
   InsertShip(M, Ship, ShipPosX, ShipPosY);
+ 
+  // UFO initial position
+  int UFOPosX = 5;
+  int UFOPosY = 0;
  
   ShowScreen  (M);
  
@@ -188,10 +192,15 @@ int main()
       InsertStars (M, 15, 10);
       InsertGround(M, 15);
       InsertSun   (M, Sun, 1, 1);
-      //InsertUFO   (M, UFO, 5, 5);
+      InsertUFO   (M, UFO, UFOPosX, UFOPosY);
       InsertShip  (M, Ship, ShipPosX, ShipPosY);
       ShowScreen  (M);
       printf("\nLast Command: %c", lastHit);
+ 
+      // update object positions
+      // UFO
+      UFOPosY++;
+      if(UFOPosY >= (_Tab_W_ - _UFO_W_)) UFOPosY = 0;
  
   }
  
