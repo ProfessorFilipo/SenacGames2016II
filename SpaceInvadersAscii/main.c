@@ -164,6 +164,7 @@ int main()
   // UFO initial position
   int UFOPosX = 5;
   int UFOPosY = 0;
+  int UFODirection = 0; // 0: to right. 1: to left
  
   ShowScreen  (M);
  
@@ -199,8 +200,26 @@ int main()
  
       // update object positions
       // UFO
-      UFOPosY++;
-      if(UFOPosY >= (_Tab_W_ - _UFO_W_)) UFOPosY = 0;
+      if(UFODirection==0) // right
+      {
+		UFOPosY++;
+        if(UFOPosY >= (_Tab_W_ - _UFO_W_))
+		{
+		   UFOPosY = (_Tab_W_ - _UFO_W_);	
+		   UFODirection = 1;
+		} 
+	  } 
+	  else // to left
+      {
+		UFOPosY--;
+        if(UFOPosY <= 0)
+		{
+		   UFOPosY = 0;	
+		   UFODirection = 0;
+		} 
+	  }
+
+      
  
   }
  
