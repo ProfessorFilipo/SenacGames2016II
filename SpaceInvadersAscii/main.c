@@ -165,6 +165,11 @@ int main()
   int UFOPosX = 5;
   int UFOPosY = 0;
   int UFODirection = 0; // 0: to right. 1: to left
+
+  // Fallen UFO settings
+  int FUFOPosX = 0;
+  int FUFOPosY = RandI(0, _Tab_W_ - _UFO_W_);
+  
  
   ShowScreen  (M);
  
@@ -194,6 +199,7 @@ int main()
       InsertGround(M, 15);
       InsertSun   (M, Sun, 1, 1);
       InsertUFO   (M, UFO, UFOPosX, UFOPosY);
+      InsertUFO   (M, UFO, FUFOPosX, FUFOPosY); // fallen UFO!
       InsertShip  (M, Ship, ShipPosX, ShipPosY);
       ShowScreen  (M);
       printf("\nLast Command: %c", lastHit);
@@ -219,8 +225,17 @@ int main()
 		} 
 	  }
 
-      
- 
+      // fallen UFO
+      if(FUFOPosX >= (_Tab_H_ - _UFO_H_)) // atingiu o solo?
+      {
+      	FUFOPosX = 0;
+		FUFOPosY = RandI(0, _Tab_W_ - _UFO_W_);
+      	 
+	  }
+	  else
+	  {
+	  	FUFOPosX++;
+	  }
   }
  
     return 0;
