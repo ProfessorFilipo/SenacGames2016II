@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <windows.h>
+#include <stdbool.h>
  
 #define _Tab_H_ 20
 #define _Tab_W_ 79
@@ -11,6 +12,9 @@
 #define _UFO_W_  5
 #define _Sun_H_  5
 #define _Sun_W_  5
+#define _Exp_H_ 4 // linhas
+#define _Exp_W_ 4 // colunas
+#define _Exp_D_ 4 // profundidade
  
  
 int RandI(int minVal, int maxVal)
@@ -74,6 +78,25 @@ void InsertGround(char M[_Tab_H_][_Tab_W_], int HorizonLine)
         }
     }
 }
+
+void InsertExplosion(char M[_Tab_H_][_Tab_W_], 
+                     char Explosion[_Exp_H_][_Exp_W_][_Exp_D_], 
+					 int Line, int Column, int Frame)
+{
+ 
+    //
+    // Insert the desired Explosion frame sprite on the (Line, Column) position on the Screen.
+    //
+    int j, k;
+    for(j=0; j < _Exp_W_; j++)
+    {
+        for(k=0; k < _Exp_D_; k++)
+        {
+            M[j+Line][k+Column] = Explosion[Frame][j][k];
+        }
+    }
+}
+
  
 void InsertShip(char M[_Tab_H_][_Tab_W_], char Ship[_Ship_H_][_Ship_W_], int Line, int Column)
 {
@@ -147,6 +170,30 @@ int main()
   	               {' ',' ',176,' ', ' '}
                  };
  
+   char Explosion[_Exp_H_][_Exp_W_][_Exp_D_] =
+                             { { {' ', ' ', ' ', ' '}, 
+                                 {' ', 254, 254, ' '}, 
+                                 {' ', 254, 254, ' '},
+						         {' ', ' ', ' ', ' '} },
+						   
+                               { {' ', 254, 254, ' '}, 
+         						 {254, 178, 178, 254},
+						         {254, 178, 178, 254}, 
+						         {' ', 254, 254, ' '} },
+
+						       { {'\\', '|', '|', '/'}, 
+						         {249, 177, 177, 249},
+						         {249, 177, 177, 249}, 
+						         {'/', '|', '|', '\\'} },
+
+                               { {'\\', ' ', 249, '/'}, 
+						         {' ', 249, ' ', ' '},
+						         {' ', ' ', 249, ' '}, 
+						         {'/', 249, ' ', '\\'} }
+
+					         };
+ 
+ 
   char lastHit;
   
   system("mode 80,40");
@@ -170,7 +217,13 @@ int main()
   int FUFOPosX = 0;
   int FUFOPosY = RandI(0, _Tab_W_ - _UFO_W_);
   
- 
+  // explosion control
+  int  ExplosionPosX  = 10;
+  int  ExplosionPosY  = 10;
+  int  ExplosionFrame =  0;
+  bool ExplosionActivate = false;
+   
+    
   ShowScreen  (M);
  
  
@@ -198,6 +251,21 @@ int main()
       InsertStars (M, 15, 10);
       InsertGround(M, 15);
       InsertSun   (M, Sun, 1, 1);
+
+      // Fallen UFO must explode when hit the ground!
+	  if(ExplosionActivate)
+	  {
+	     InsertExplosion(M, Explosion, ExplosionPosX, ExplosionPosY, ExplosionFrame);	
+	     ExplosionFrame++;
+	     if(ExplosionFrame>=4)
+	     {
+	     	ExplosionActivate = false;
+	     	ExplosionFrame = 0;
+		 }
+	  }
+	  
+      
+            
       InsertUFO   (M, UFO, UFOPosX, UFOPosY);
       InsertUFO   (M, UFO, FUFOPosX, FUFOPosY); // fallen UFO!
       InsertShip  (M, Ship, ShipPosX, ShipPosY);
@@ -228,9 +296,12 @@ int main()
       // fallen UFO
       if(FUFOPosX >= (_Tab_H_ - _UFO_H_)) // atingiu o solo?
       {
+        ExplosionActivate = true;
+		ExplosionPosX = _Tab_H_ - 4;
+		ExplosionPosY = FUFOPosY;
       	FUFOPosX = 0;
 		FUFOPosY = RandI(0, _Tab_W_ - _UFO_W_);
-      	 
+		//FUFOPosY = _Tab_W_ - 5; // teste teste
 	  }
 	  else
 	  {
