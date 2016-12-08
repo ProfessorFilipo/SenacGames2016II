@@ -61,7 +61,7 @@ void TelaInicioFase(int NroFase)
 	getch();
 }
 
-void MontaTabuleiro(char M[_Tab_H_][_Tab_W_] /*, int Acertos, int Erros, int Vidas*/)
+void MontaTabuleiro(char M[_Tab_H_][_Tab_W_], int Acertos /*, int Erros, int Vidas*/)
 {
 	int i, j;
 
@@ -98,32 +98,65 @@ void MontaTabuleiro(char M[_Tab_H_][_Tab_W_] /*, int Acertos, int Erros, int Vid
 		}
 	}
 	
+    // penultima linha
+	M[_Tab_H_-3][0]         = 219;
+	M[_Tab_H_-3][1]         = 200;
+    M[_Tab_H_-3][_Tab_W_-1] = 219;
+	M[_Tab_H_-3][_Tab_W_-2] = 188;
+	for(j=2; j<(_Tab_W_-2); j++) M[_Tab_H_-3][j] = 205;
 	
-
+	// ultima linha	
+    for(j=0; j<(_Tab_W_); j++) M[_Tab_H_-2][j] = 219;
+    
+    // Barra de Informacoes
+    M[_Tab_H_-1][0] = 245; //M[_Tab_H_-1][1] = ':'; M[_Tab_H_-1][2] = ':';
+    M[_Tab_H_-1][1] = 'A'; 
+	M[_Tab_H_-1][2] = 'C'; 
+	M[_Tab_H_-1][3] = 'E'; 
+	M[_Tab_H_-1][4] = 'R'; 
+	M[_Tab_H_-1][5] = 'T'; 
+	M[_Tab_H_-1][6] = 'O'; 
+	M[_Tab_H_-1][7] = 'S';
+	M[_Tab_H_-1][8] = ':';
+	// imprime acertos
+	for(j=0; j<Acertos; j++)
+	{
+		M[_Tab_H_-1][9+j] = 184;
+	}
+    
 }
 
 void MostraTela( char M[_Tab_H_][_Tab_W_] )
 {
     int i,j;
  
-    for(i=0; i<_Tab_H_; i++)
+    //printf("\n");
+	for(i=0; i<_Tab_H_; i++)
     {
         for(j=0; j<_Tab_W_; j++)
         {
             gotoxy(i,j);
             printf("%c", M[i][j]);
         }
+        //printf("\n");
     }
 }
 
 int main(int argc, char *argv[]) {
 
-    char Nome[50];
+    //char Nome[50];
+    char *Nome = (char*)malloc( 50 * sizeof(char) );
+    if(Nome == NULL)
+    {
+    	printf("\n>>> Erro alocando memória! \n");
+    	return -1;
+	}
+    
     char Tabuleiro[_Tab_H_][_Tab_W_];
 
-    //TelaAbertura   (&Nome);
-    //TelaInicioFase (1);
-    MontaTabuleiro (Tabuleiro);
+    TelaAbertura   (Nome);
+    TelaInicioFase (1);
+    MontaTabuleiro (Tabuleiro, 8);
     MostraTela     (Tabuleiro);
     
     //printf("\n %s\n ", Nome);
